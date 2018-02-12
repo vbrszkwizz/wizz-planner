@@ -4,9 +4,12 @@
   "private": true,
   "homepage": "https://vbrszkwizz.github.io/wizz-planner",
   "devDependencies": {
-    "gh-pages": "^1.1.0"
+    "gh-pages": "^1.1.0",
+    "jest-fetch-mock": "^1.4.1",
+    "jest-localstorage-mock": "^2.2.0"
   },
   "dependencies": {
+    "lodash.pick": "^4.4.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-scripts": "1.1.1"
