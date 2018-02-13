@@ -1,22 +1,31 @@
 import React, { Component } from 'react';
 import pick from 'lodash.pick';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+import DatePicker from 'material-ui/DatePicker';
+import './searchField.css';
 
 class SearchField extends Component {
   constructor() {
     super();
     this.state = {
-      origin: localStorage.getItem('origin') || '',
+      origin: localStorage.origin ? localStorage.getItem('origin') : '',
       connections: localStorage.destination
         ? [...localStorage.getItem('connections').split(',')]
         : [],
-      destination: localStorage.getItem('destination') || ''
+      destination: localStorage.getItem('destination') || '',
+      outboundDate: null,
+      inboundDate: null
     };
     this.handleOriginChange = this.handleOriginChange.bind(this);
     this.handleDestinationChange = this.handleDestinationChange.bind(this);
+    this.handleOutboundDateChange = this.handleOutboundDateChange.bind(this);
+    this.handleInboundDateChange = this.handleInboundDateChange.bind(this);
+    this.disableDates = this.disableDates.bind(this);
   }
 
   handleOriginChange(event) {
-    let origin = event.target.value;
+    let origin = event.target.innerHTML;
 
     localStorage.setItem('destination', '');
     this.setState({ destination: '' });
@@ -26,9 +35,17 @@ class SearchField extends Component {
   }
 
   handleDestinationChange(event) {
-    let destination = event.target.value;
+    let destination = event.target.innerHTML;
     localStorage.setItem('destination', destination);
     this.setState({ destination });
+  }
+
+  handleOutboundDateChange(event, date) {
+    this.setState({ outboundDate: date });
+  }
+
+  handleInboundDateChange(event, date) {
+    this.setState({ inboundDate: date })
   }
 
   calculateConnections() {
@@ -52,6 +69,10 @@ class SearchField extends Component {
     this.setState({ connections });
   }
 
+  disableDates(date) {
+    return +date <= +this.state.outboundDate;
+  }
+
   render() {
     let stations = this.props.stations
       .map(e => pick(e, ['iata', 'shortName']))
@@ -67,29 +88,47 @@ class SearchField extends Component {
 
     return (
       <form>
-        <label>
-          from
-          <select value={this.state.origin} onChange={this.handleOriginChange}>
-            {stations.map(station => (
-              <option key={station.iata} value={station.shortName}>
-                {station.shortName}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          to
-          <select
-            value={this.state.destination}
-            onChange={this.handleDestinationChange}
-          >
-            {this.state.connections.map(connection => (
-              <option key={connection} value={connection}>
-                {connection}
-              </option>
-            ))}
-          </select>
-        </label>
+        <SelectField
+          className="airport-select"
+          floatingLabelText="from"
+          value={this.state.origin}
+          onChange={this.handleOriginChange}
+        >
+          {stations.map(station => (
+            <MenuItem
+              key={station.iata}
+              value={station.shortName}
+              primaryText={station.shortName}
+            />
+          ))}
+        </SelectField>
+        <SelectField
+          className="airport-select"
+          floatingLabelText="to"
+          value={this.state.destination}
+          onChange={this.handleDestinationChange}
+        >
+          {this.state.connections.map(connection => (
+            <MenuItem
+              key={connection}
+              value={connection}
+              primaryText={connection}
+            />
+          ))}
+        </SelectField>
+        <div className="datepicker">
+          <DatePicker
+            hintText="departure"
+            value={this.state.outboundDate}
+            onChange={this.handleOutboundDateChange}
+          />
+          <DatePicker
+            hintText="return"
+            value={this.state.inboundDate}
+            onChange={this.handleInboundDateChange}
+            shouldDisableDate={this.disableDates}
+          />
+        </div>
       </form>
     );
   }

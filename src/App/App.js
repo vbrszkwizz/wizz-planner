@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import SearchField from '../SearchField/SearchField';
 
 class App extends Component {
@@ -17,7 +18,11 @@ class App extends Component {
   }
 
   render() {
-    return <SearchField stations={this.state.stations} />;
+    return (
+      <MuiThemeProvider>
+        <SearchField stations={this.state.stations} />
+      </MuiThemeProvider>
+    );
   }
 }
 
