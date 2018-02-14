@@ -1,13 +1,30 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import SearchField from '../SearchField/SearchField';
+import FlightsList from '../FlightsList/FlightsList';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      stations: []
+      stations: [],
+      origin: localStorage.origin ? localStorage.getItem('origin') : '',
+      connections: localStorage.destination
+        ? [...localStorage.getItem('connections').split(',')]
+        : [],
+      destination: localStorage.getItem('destination') || '',
+      outboundDate: null,
+      inboundDate: null,
+      validationErrorOrigin: '',
+      validationErrorDestination: '',
+      validationErrorOutboundDate: '',
+      flights: []
     };
+    this.handleOriginChange = this.handleOriginChange.bind(this);
+    this.handleDestinationChange = this.handleDestinationChange.bind(this);
+    this.handleOutboundDateChange = this.handleOutboundDateChange.bind(this);
+    this.handleInboundDateChange = this.handleInboundDateChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -17,10 +34,152 @@ class App extends Component {
       .catch(console.error);
   }
 
+  handleOriginChange(event) {
+    let origin = event.target.innerHTML;
+
+    localStorage.setItem('destination', '');
+    this.setState({ destination: '' });
+
+    localStorage.setItem('origin', origin);
+    this.setState({ origin }, () => this.calculateConnections());
+
+    this.setState({ validationErrorOrigin: '' });
+    this.setState({ flights: [] });
+  }
+
+  handleDestinationChange(event) {
+    let destination = event.target.innerHTML;
+    localStorage.setItem('destination', destination);
+    this.setState({ destination });
+    this.setState({ validationErrorDestination: '' });
+    this.setState({ flights: [] });
+  }
+
+  handleOutboundDateChange(event, date) {
+    this.setState({ outboundDate: date });
+    this.setState({ validationErrorOutboundDate: '' });
+    this.setState({ flights: [] });
+  }
+
+  handleInboundDateChange(event, date) {
+    this.setState({ inboundDate: date });
+  }
+
+  handleSubmit() {
+    let payload = {
+      origin: this.getIataCode(this.state.stations, this.state.origin),
+      destination: this.getIataCode(
+        this.state.stations,
+        this.state.destination
+      ),
+      outboundDate: this.formatDate(this.state.outboundDate),
+      inboundDate: this.formatDate(this.state.inboundDate)
+    };
+
+    this.validateForm();
+
+    if (
+      this.state.origin === '' ||
+      this.state.destination === '' ||
+      this.state.outboundDate === null
+    ) {
+      return;
+    }
+
+    fetch(
+      `https://mock-air.herokuapp.com/search?departureStation=${
+        payload.origin
+      }&arrivalStation=${payload.destination}&date=${payload.outboundDate}`
+    )
+      .then(res => res.json())
+      .then(flights => this.setState({ flights }))
+      .catch(console.error);
+  }
+
+  validateForm() {
+    if (this.state.origin === '') {
+      this.setState({ validationErrorOrigin: 'departure is required' });
+    } else {
+      this.setState({ validationErrorOrigin: '' });
+    }
+    if (this.state.destination === '') {
+      this.setState({ validationErrorDestination: 'destination is required' });
+    } else {
+      this.setState({ validationErrorDestination: '' });
+    }
+    if (this.state.outboundDate === null) {
+      this.setState({
+        validationErrorOutboundDate: 'departure date is required'
+      });
+    } else {
+      this.setState({ validationErrorOutboundDate: '' });
+    }
+  }
+
+  formatDate(date) {
+    return date === null
+      ? null
+      : `${date.getUTCFullYear()}-${(date.getMonth() + 1)
+          .toString()
+          .padStart(2, '0')}-${date
+          .getDate()
+          .toString()
+          .padStart(2, '0')}`;
+  }
+
+  getIataCode(stations, city) {
+    return city === '' ? '' : stations.find(e => e.shortName === city).iata;
+  }
+
+  calculateConnections() {
+    let connectionData = this.state.stations.filter(
+      e => e.shortName === this.state.origin
+    )[0].connections;
+
+    let connectionIataCodes = connectionData.map(e => e.iata);
+
+    if (connectionIataCodes.some(e => e === undefined)) {
+      this.setState({ connections: [] });
+      return;
+    }
+
+    let connections = connectionIataCodes
+      .map(e => this.state.stations.find(el => el.iata === e))
+      .map(e => e.shortName)
+      .sort();
+
+    localStorage.setItem('connections', connections);
+    this.setState({ connections });
+  }
+
   render() {
     return (
       <MuiThemeProvider>
-        <SearchField stations={this.state.stations} />
+        <div>
+          <SearchField
+            stations={this.state.stations}
+            origin={this.state.origin}
+            connections={this.state.connections}
+            destination={this.state.destination}
+            outboundDate={this.state.outboundDate}
+            inboundDate={this.state.inboundDate}
+            validationErrorOrigin={this.state.validationErrorOrigin}
+            validationErrorDestination={this.state.validationErrorDestination}
+            validationErrorOutboundDate={this.state.validationErrorOutboundDate}
+            handleOriginChange={this.handleOriginChange}
+            handleDestinationChange={this.handleDestinationChange}
+            handleOutboundDateChange={this.handleOutboundDateChange}
+            handleInboundDateChange={this.handleInboundDateChange}
+            handleSubmit={this.handleSubmit}
+          />
+          {this.state.flights.length > 0 && (
+            <FlightsList
+              flights={this.state.flights}
+              origin={this.state.origin}
+              destination={this.state.destination}
+            />
+          )}
+        </div>
       </MuiThemeProvider>
     );
   }

@@ -9,6 +9,7 @@
     "jest-localstorage-mock": "^2.2.0"
   },
   "dependencies": {
+    "lodash.flatten": "^4.4.0",
     "lodash.pick": "^4.4.0",
     "material-ui": "^0.20.0",
     "material-ui-selectfield": "^1.0.24",
