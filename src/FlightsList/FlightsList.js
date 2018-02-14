@@ -13,20 +13,8 @@ import flatten from 'lodash.flatten';
 import './flightsList.css';
 
 class FlightsList extends Component {
-  constructor() {
-    super();
-    this.state = {
-      selected: []
-    };
-  }
-
-  isSelected = index => this.state.selected.includes(index);
-
-  handleRowSelection = selectedRows => {
-    this.setState({
-      selected: selectedRows
-    });
-  };
+  isSelectedOutbound = index => this.props.selectedOutbound.includes(index);
+  isSelectedInbound = index => this.props.selectedInbound.includes(index);
 
   getProperties = array =>
     flatten(
@@ -52,7 +40,10 @@ class FlightsList extends Component {
     return (
       <Card style={style} zDepth={2}>
         <div className="flights-list">
-          <Table onRowSelection={this.handleRowSelection}>
+          <Table
+            onRowSelection={this.props.handleRowSelectionOutbound}
+            onCellClick={this.props.handleOnCellClickOutbound}
+          >
             <TableHeader>
               <TableRow>
                 §
@@ -69,7 +60,7 @@ class FlightsList extends Component {
             </TableHeader>
             <TableBody deselectOnClickaway={false}>
               {flights.map((e, i) => (
-                <TableRow key={i} selected={this.isSelected(i)}>
+                <TableRow key={i} selected={this.isSelectedOutbound(i)}>
                   <TableRowColumn>{e.bundle}</TableRowColumn>
                   <TableRowColumn>€ {e.price}</TableRowColumn>
                   <TableRowColumn>{e.departure}</TableRowColumn>
@@ -79,7 +70,10 @@ class FlightsList extends Component {
             </TableBody>
           </Table>
           {this.props.flightsBack.length > 0 && (
-            <Table onRowSelection={this.handleRowSelection}>
+            <Table
+              onRowSelection={this.props.handleRowSelectionInbound}
+              onCellClick={this.props.handleOnCellClickInbound}
+            >
               <TableHeader>
                 <TableRow>
                   <TableHeaderColumn
@@ -98,7 +92,7 @@ class FlightsList extends Component {
               </TableHeader>
               <TableBody deselectOnClickaway={false}>
                 {flightsBack.map((e, i) => (
-                  <TableRow key={i} selected={this.isSelected(i)}>
+                  <TableRow key={i} selected={this.isSelectedInbound(i)}>
                     <TableRowColumn>{e.bundle}</TableRowColumn>
                     <TableRowColumn>€ {e.price}</TableRowColumn>
                     <TableRowColumn>{e.departure}</TableRowColumn>
@@ -118,7 +112,13 @@ FlightsList.propTypes = {
   flights: PropTypes.arrayOf(PropTypes.object).isRequired,
   flightsBack: PropTypes.arrayOf(PropTypes.object).isRequired,
   origin: PropTypes.string.isRequired,
-  destination: PropTypes.string.isRequired
+  destination: PropTypes.string.isRequired,
+  selectedOutbound: PropTypes.arrayOf(PropTypes.number),
+  selectedInbound: PropTypes.arrayOf(PropTypes.number),
+  handleRowSelectionOutbound: PropTypes.func.isRequired,
+  handleRowSelectionInbound: PropTypes.func.isRequired,
+  handleOnCellClickOutbound: PropTypes.func.isRequired,
+  handleOnCellClickInbound: PropTypes.func.isRequired
 };
 
 export default FlightsList;

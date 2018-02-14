@@ -36,7 +36,7 @@ const SearchField = props => {
   return (
     <Card style={cardStyle} zDepth={2}>
       <form className="search-field">
-        <div className="yo">
+        <div>
           <SelectField
             className="airport-select"
             floatingLabelText="from"

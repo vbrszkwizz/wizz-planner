@@ -23,7 +23,11 @@ class App extends Component {
       validationErrorDestination: '',
       validationErrorOutboundDate: '',
       flights: [],
-      flightsBack: []
+      flightsBack: [],
+      selectedOutbound: [],
+      selectedInbound: [],
+      selectedOutboundValues: [],
+      selectedInboundValues: []
     };
   }
 
@@ -160,6 +164,40 @@ class App extends Component {
     this.setState({ connections });
   }
 
+  handleRowSelectionOutbound = selectedRows => {
+    this.setState({
+      selectedOutbound: selectedRows
+    });
+  };
+
+  handleRowSelectionInbound = selectedRows => {
+    this.setState({
+      selectedInbound: selectedRows
+    });
+  };
+
+  handleOnCellClickOutbound = (row, col, event) => {
+    this.setState({
+      selectedOutboundValues: [
+        event.currentTarget.parentNode.childNodes[1].innerHTML,
+        event.currentTarget.parentNode.childNodes[2].innerHTML,
+        event.currentTarget.parentNode.childNodes[3].innerHTML,
+        event.currentTarget.parentNode.childNodes[4].innerHTML
+      ]
+    });
+  };
+
+  handleOnCellClickInbound = (row, col, event) => {
+    this.setState({
+      selectedInboundValues: [
+        event.currentTarget.parentNode.childNodes[1].innerHTML,
+        event.currentTarget.parentNode.childNodes[2].innerHTML,
+        event.currentTarget.parentNode.childNodes[3].innerHTML,
+        event.currentTarget.parentNode.childNodes[4].innerHTML
+      ]
+    });
+  };
+
   render() {
     const muiTheme = getMuiTheme({
       palette: {
@@ -196,9 +234,27 @@ class App extends Component {
               flightsBack={this.state.flightsBack}
               origin={this.state.origin}
               destination={this.state.destination}
+              selectedOutbound={this.state.selectedOutbound}
+              selectedInbound={this.state.selectedInbound}
+              handleRowSelectionOutbound={this.handleRowSelectionOutbound}
+              handleRowSelectionInbound={this.handleRowSelectionInbound}
+              handleOnCellClickOutbound={this.handleOnCellClickOutbound}
+              handleOnCellClickInbound={this.handleOnCellClickInbound}
             />
           )}
-          {this.state.flights.length > 0 && <Summary />}
+          {(this.state.selectedOutbound.length > 0 ||
+            this.state.selectedInbound.length > 0) && (
+            <Summary
+              selectedOutbound={this.state.selectedOutbound}
+              selectedInbound={this.state.selectedInbound}
+              selectedOutboundValues={this.state.selectedOutboundValues}
+              selectedInboundValues={this.state.selectedInboundValues}
+              origin={this.state.origin}
+              destination={this.state.destination}
+              outboundDate={this.formatDate(this.state.outboundDate)}
+              inboundDate={this.formatDate(this.state.inboundDate)}
+            />
+          )}
         </div>
       </MuiThemeProvider>
     );
