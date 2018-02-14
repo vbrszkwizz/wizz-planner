@@ -20,9 +20,7 @@ class FlightsList extends Component {
     };
   }
 
-  isSelected = index => {
-    return this.state.selected.indexOf(index) !== -1;
-  };
+  isSelected = index => this.state.selected.includes(index);
 
   handleRowSelection = selectedRows => {
     this.setState({
@@ -30,9 +28,9 @@ class FlightsList extends Component {
     });
   };
 
-  render() {
-    let flights = flatten(
-      this.props.flights.map(e =>
+  getProperties = array =>
+    flatten(
+      array.map(e =>
         e.fares.map(el => ({
           departure: e.departure.slice(11, 16),
           arrival: e.arrival.slice(11, 16),
@@ -42,16 +40,9 @@ class FlightsList extends Component {
       )
     );
 
-    let flightsBack = flatten(
-      this.props.flightsBack.map(e =>
-        e.fares.map(el => ({
-          departure: e.departure.slice(11, 16),
-          arrival: e.arrival.slice(11, 16),
-          bundle: el.bundle,
-          price: el.price
-        }))
-      )
-    );
+  render() {
+    let flights = this.getProperties(this.props.flights);
+    let flightsBack = this.getProperties(this.props.flightsBack);
 
     const style = {
       width: 830,
@@ -80,7 +71,7 @@ class FlightsList extends Component {
               {flights.map((e, i) => (
                 <TableRow key={i} selected={this.isSelected(i)}>
                   <TableRowColumn>{e.bundle}</TableRowColumn>
-                  <TableRowColumn>{e.price}</TableRowColumn>
+                  <TableRowColumn>€ {e.price}</TableRowColumn>
                   <TableRowColumn>{e.departure}</TableRowColumn>
                   <TableRowColumn>{e.arrival}</TableRowColumn>
                 </TableRow>
@@ -109,7 +100,7 @@ class FlightsList extends Component {
                 {flightsBack.map((e, i) => (
                   <TableRow key={i} selected={this.isSelected(i)}>
                     <TableRowColumn>{e.bundle}</TableRowColumn>
-                    <TableRowColumn>{e.price}</TableRowColumn>
+                    <TableRowColumn>€ {e.price}</TableRowColumn>
                     <TableRowColumn>{e.departure}</TableRowColumn>
                     <TableRowColumn>{e.arrival}</TableRowColumn>
                   </TableRow>

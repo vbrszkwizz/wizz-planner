@@ -25,11 +25,6 @@ class App extends Component {
       flights: [],
       flightsBack: []
     };
-    this.handleOriginChange = this.handleOriginChange.bind(this);
-    this.handleDestinationChange = this.handleDestinationChange.bind(this);
-    this.handleOutboundDateChange = this.handleOutboundDateChange.bind(this);
-    this.handleInboundDateChange = this.handleInboundDateChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -39,7 +34,7 @@ class App extends Component {
       .catch(console.error);
   }
 
-  handleOriginChange(event) {
+  handleOriginChange = event => {
     let origin = event.target.innerHTML;
 
     localStorage.setItem('destination', '');
@@ -49,27 +44,27 @@ class App extends Component {
     this.setState({ origin }, () => this.calculateConnections());
 
     this.setState({ validationErrorOrigin: '', flights: [] });
-  }
+  };
 
-  handleDestinationChange(event) {
+  handleDestinationChange = event => {
     let destination = event.target.innerHTML;
     localStorage.setItem('destination', destination);
     this.setState({ destination, validationErrorDestination: '', flights: [] });
-  }
+  };
 
-  handleOutboundDateChange(event, date) {
+  handleOutboundDateChange = (event, date) => {
     this.setState({
       outboundDate: date,
       validationErrorOutboundDate: '',
       flights: []
     });
-  }
+  };
 
-  handleInboundDateChange(event, date) {
+  handleInboundDateChange = (event, date) => {
     this.setState({ inboundDate: date, flightsBack: [] });
-  }
+  };
 
-  handleSubmit() {
+  handleSubmit = () => {
     let payload = {
       origin: this.getIataCode(this.state.stations, this.state.origin),
       destination: this.getIataCode(
@@ -109,7 +104,7 @@ class App extends Component {
         .then(flightsBack => this.setState({ flightsBack }))
         .catch(console.error);
     }
-  }
+  };
 
   validateForm() {
     if (this.state.origin === '') {
@@ -131,8 +126,8 @@ class App extends Component {
     }
   }
 
-  formatDate(date) {
-    return date === null
+  formatDate = date =>
+    date === null
       ? null
       : `${date.getUTCFullYear()}-${(date.getMonth() + 1)
           .toString()
@@ -140,11 +135,9 @@ class App extends Component {
           .getDate()
           .toString()
           .padStart(2, '0')}`;
-  }
 
-  getIataCode(stations, city) {
-    return city === '' ? '' : stations.find(e => e.shortName === city).iata;
-  }
+  getIataCode = (stations, city) =>
+    city === '' ? '' : stations.find(e => e.shortName === city).iata;
 
   calculateConnections() {
     let connectionData = this.state.stations.filter(
