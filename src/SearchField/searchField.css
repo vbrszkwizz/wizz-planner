@@ -12,7 +12,7 @@
 
 .search-field {
   padding-left: 40px;
-  padding-top: 20px;
   display: flex;
   align-items: flex-end;
+  padding-bottom: 20px;
 }

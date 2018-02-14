@@ -5,7 +5,7 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import DatePicker from 'material-ui/DatePicker';
 import FlatButton from 'material-ui/FlatButton';
-import Paper from 'material-ui/Paper';
+import Card from 'material-ui/Card';
 import './searchField.css';
 
 const SearchField = props => {
@@ -23,19 +23,18 @@ const SearchField = props => {
 
   const disableDates = date => +date <= +props.outboundDate;
 
-  const style = {
+  const buttonStyle = {
     margin: 12,
     height: 38
   };
 
-  const paperStyle = {
-    height: 170,
+  const cardStyle = {
     width: 830,
     margin: 20
   };
 
   return (
-    <Paper style={paperStyle} zDepth={2}>
+    <Card style={cardStyle} zDepth={2}>
       <form className="search-field">
         <div className="yo">
           <SelectField
@@ -86,11 +85,11 @@ const SearchField = props => {
         </div>
         <FlatButton
           label="search flights"
-          style={style}
+          style={buttonStyle}
           onClick={props.handleSubmit}
         />
       </form>
-    </Paper>
+    </Card>
   );
 };
 

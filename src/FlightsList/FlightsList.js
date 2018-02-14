@@ -8,7 +8,7 @@ import {
   TableRow,
   TableRowColumn
 } from 'material-ui/Table';
-import Paper from 'material-ui/Paper';
+import Card from 'material-ui/Card';
 import flatten from 'lodash.flatten';
 import './flightsList.css';
 
@@ -53,19 +53,13 @@ class FlightsList extends Component {
       )
     );
 
-    const tableHeight =
-      flightsBack.length < 1
-        ? flights.length * 50 + 122
-        : (flights.length + flightsBack.length) * 50 + 244;
-
     const style = {
-      height: tableHeight,
       width: 830,
       margin: 20
     };
 
     return (
-      <Paper style={style} zDepth={2}>
+      <Card style={style} zDepth={2}>
         <div className="flights-list">
           <Table onRowSelection={this.handleRowSelection}>
             <TableHeader>
@@ -124,7 +118,7 @@ class FlightsList extends Component {
             </Table>
           )}
         </div>
-      </Paper>
+      </Card>
     );
   }
 }
