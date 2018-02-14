@@ -1,12 +1,18 @@
 .airport-select {
-  margin-left: 40px;
+  margin-right: 40px;
 }
 
 .datepicker {
-  margin-left: 40px;
   display: flex;
 }
 
 .datepicker > :nth-child(2) {
   margin-left: 40px;
+}
+
+.search-field {
+  padding-left: 10vw;
+  padding-top: 20px;
+  display: flex;
+  align-items: flex-end;
 }

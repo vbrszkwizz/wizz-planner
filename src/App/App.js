@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { pink500 } from 'material-ui/styles/colors';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import SearchField from '../SearchField/SearchField';
 import FlightsList from '../FlightsList/FlightsList';
 
@@ -18,7 +20,8 @@ class App extends Component {
       validationErrorOrigin: '',
       validationErrorDestination: '',
       validationErrorOutboundDate: '',
-      flights: []
+      flights: [],
+      flightsBack: []
     };
     this.handleOriginChange = this.handleOriginChange.bind(this);
     this.handleDestinationChange = this.handleDestinationChange.bind(this);
@@ -43,26 +46,25 @@ class App extends Component {
     localStorage.setItem('origin', origin);
     this.setState({ origin }, () => this.calculateConnections());
 
-    this.setState({ validationErrorOrigin: '' });
-    this.setState({ flights: [] });
+    this.setState({ validationErrorOrigin: '', flights: [] });
   }
 
   handleDestinationChange(event) {
     let destination = event.target.innerHTML;
     localStorage.setItem('destination', destination);
-    this.setState({ destination });
-    this.setState({ validationErrorDestination: '' });
-    this.setState({ flights: [] });
+    this.setState({ destination, validationErrorDestination: '', flights: [] });
   }
 
   handleOutboundDateChange(event, date) {
-    this.setState({ outboundDate: date });
-    this.setState({ validationErrorOutboundDate: '' });
-    this.setState({ flights: [] });
+    this.setState({
+      outboundDate: date,
+      validationErrorOutboundDate: '',
+      flights: []
+    });
   }
 
   handleInboundDateChange(event, date) {
-    this.setState({ inboundDate: date });
+    this.setState({ inboundDate: date, flightsBack: [] });
   }
 
   handleSubmit() {
@@ -94,6 +96,17 @@ class App extends Component {
       .then(res => res.json())
       .then(flights => this.setState({ flights }))
       .catch(console.error);
+
+    if (this.state.inboundDate !== null) {
+      fetch(
+        `https://mock-air.herokuapp.com/search?departureStation=${
+          payload.destination
+        }&arrivalStation=${payload.origin}&date=${payload.inboundDate}`
+      )
+        .then(res => res.json())
+        .then(flightsBack => this.setState({ flightsBack }))
+        .catch(console.error);
+    }
   }
 
   validateForm() {
@@ -153,8 +166,18 @@ class App extends Component {
   }
 
   render() {
+    const muiTheme = getMuiTheme({
+      palette: {
+        primary1Color: pink500,
+        primary2Color: pink500
+      },
+      datePicker: {
+        headerColor: pink500
+      }
+    });
+
     return (
-      <MuiThemeProvider>
+      <MuiThemeProvider muiTheme={muiTheme}>
         <div>
           <SearchField
             stations={this.state.stations}
@@ -175,6 +198,7 @@ class App extends Component {
           {this.state.flights.length > 0 && (
             <FlightsList
               flights={this.state.flights}
+              flightsBack={this.state.flightsBack}
               origin={this.state.origin}
               destination={this.state.destination}
             />

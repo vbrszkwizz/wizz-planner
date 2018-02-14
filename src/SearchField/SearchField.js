@@ -22,55 +22,58 @@ const SearchField = props => {
   const disableDates = date => +date <= +props.outboundDate;
 
   const style = {
-    margin: 12
+    margin: 12,
+    height: 38
   };
 
   return (
-    <form>
-      <SelectField
-        className="airport-select"
-        floatingLabelText="from"
-        value={props.origin}
-        onChange={props.handleOriginChange}
-        errorText={props.validationErrorOrigin}
-      >
-        {stations.map(station => (
-          <MenuItem
-            key={station.iata}
-            value={station.shortName}
-            primaryText={station.shortName}
+    <form className="search-field">
+      <div className="yo">
+        <SelectField
+          className="airport-select"
+          floatingLabelText="from"
+          value={props.origin}
+          onChange={props.handleOriginChange}
+          errorText={props.validationErrorOrigin}
+        >
+          {stations.map(station => (
+            <MenuItem
+              key={station.iata}
+              value={station.shortName}
+              primaryText={station.shortName}
+            />
+          ))}
+        </SelectField>
+        <SelectField
+          className="airport-select"
+          floatingLabelText="to"
+          value={props.destination}
+          onChange={props.handleDestinationChange}
+          errorText={props.validationErrorDestination}
+        >
+          {props.connections.map(connection => (
+            <MenuItem
+              key={connection}
+              value={connection}
+              primaryText={connection}
+            />
+          ))}
+        </SelectField>
+        <div className="datepicker">
+          <DatePicker
+            hintText="departure"
+            value={props.outboundDate}
+            onChange={props.handleOutboundDateChange}
+            minDate={new Date()}
+            errorText={props.validationErrorOutboundDate}
           />
-        ))}
-      </SelectField>
-      <SelectField
-        className="airport-select"
-        floatingLabelText="to"
-        value={props.destination}
-        onChange={props.handleDestinationChange}
-        errorText={props.validationErrorDestination}
-      >
-        {props.connections.map(connection => (
-          <MenuItem
-            key={connection}
-            value={connection}
-            primaryText={connection}
+          <DatePicker
+            hintText="return"
+            value={props.inboundDate}
+            onChange={props.handleInboundDateChange}
+            shouldDisableDate={disableDates}
           />
-        ))}
-      </SelectField>
-      <div className="datepicker">
-        <DatePicker
-          hintText="departure"
-          value={props.outboundDate}
-          onChange={props.handleOutboundDateChange}
-          minDate={new Date()}
-          errorText={props.validationErrorOutboundDate}
-        />
-        <DatePicker
-          hintText="return"
-          value={props.inboundDate}
-          onChange={props.handleInboundDateChange}
-          shouldDisableDate={disableDates}
-        />
+        </div>
       </div>
       <RaisedButton
         label="search flights"
