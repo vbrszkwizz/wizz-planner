@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   Table,
   TableBody,
@@ -7,6 +8,7 @@ import {
   TableRow,
   TableRowColumn
 } from 'material-ui/Table';
+import Paper from 'material-ui/Paper';
 import flatten from 'lodash.flatten';
 import './flightsList.css';
 
@@ -51,40 +53,26 @@ class FlightsList extends Component {
       )
     );
 
+    const tableHeight =
+      flightsBack.length < 1
+        ? flights.length * 50 + 122
+        : (flights.length + flightsBack.length) * 50 + 244;
+
+    const style = {
+      height: tableHeight,
+      width: 830,
+      margin: 20
+    };
+
     return (
-      <div className="flights-list">
-        <Table onRowSelection={this.handleRowSelection}>
-          <TableHeader>
-            <TableRow>
-              §
-              <TableHeaderColumn colSpan="4" style={{ textAlign: 'center' }}>
-                {this.props.origin} - {this.props.destination}
-              </TableHeaderColumn>
-            </TableRow>
-            <TableRow>
-              <TableHeaderColumn>type</TableHeaderColumn>
-              <TableHeaderColumn>price</TableHeaderColumn>
-              <TableHeaderColumn>departure</TableHeaderColumn>
-              <TableHeaderColumn>arrival</TableHeaderColumn>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {flights.map((e, i) => (
-              <TableRow key={i} selected={this.isSelected(i)}>
-                <TableRowColumn>{e.bundle}</TableRowColumn>
-                <TableRowColumn>{e.price}</TableRowColumn>
-                <TableRowColumn>{e.departure}</TableRowColumn>
-                <TableRowColumn>{e.arrival}</TableRowColumn>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        {this.props.flightsBack.length > 0 && (
+      <Paper style={style} zDepth={2}>
+        <div className="flights-list">
           <Table onRowSelection={this.handleRowSelection}>
             <TableHeader>
               <TableRow>
+                §
                 <TableHeaderColumn colSpan="4" style={{ textAlign: 'center' }}>
-                  {this.props.destination} - {this.props.origin}
+                  {this.props.origin} - {this.props.destination}
                 </TableHeaderColumn>
               </TableRow>
               <TableRow>
@@ -94,8 +82,8 @@ class FlightsList extends Component {
                 <TableHeaderColumn>arrival</TableHeaderColumn>
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {flightsBack.map((e, i) => (
+            <TableBody deselectOnClickaway={false}>
+              {flights.map((e, i) => (
                 <TableRow key={i} selected={this.isSelected(i)}>
                   <TableRowColumn>{e.bundle}</TableRowColumn>
                   <TableRowColumn>{e.price}</TableRowColumn>
@@ -105,10 +93,47 @@ class FlightsList extends Component {
               ))}
             </TableBody>
           </Table>
-        )}
-      </div>
+          {this.props.flightsBack.length > 0 && (
+            <Table onRowSelection={this.handleRowSelection}>
+              <TableHeader>
+                <TableRow>
+                  <TableHeaderColumn
+                    colSpan="4"
+                    style={{ textAlign: 'center' }}
+                  >
+                    {this.props.destination} - {this.props.origin}
+                  </TableHeaderColumn>
+                </TableRow>
+                <TableRow>
+                  <TableHeaderColumn>type</TableHeaderColumn>
+                  <TableHeaderColumn>price</TableHeaderColumn>
+                  <TableHeaderColumn>departure</TableHeaderColumn>
+                  <TableHeaderColumn>arrival</TableHeaderColumn>
+                </TableRow>
+              </TableHeader>
+              <TableBody deselectOnClickaway={false}>
+                {flightsBack.map((e, i) => (
+                  <TableRow key={i} selected={this.isSelected(i)}>
+                    <TableRowColumn>{e.bundle}</TableRowColumn>
+                    <TableRowColumn>{e.price}</TableRowColumn>
+                    <TableRowColumn>{e.departure}</TableRowColumn>
+                    <TableRowColumn>{e.arrival}</TableRowColumn>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </div>
+      </Paper>
     );
   }
 }
+
+FlightsList.propTypes = {
+  flights: PropTypes.arrayOf(PropTypes.object).isRequired,
+  flightsBack: PropTypes.arrayOf(PropTypes.object).isRequired,
+  origin: PropTypes.string.isRequired,
+  destination: PropTypes.string.isRequired
+};
 
 export default FlightsList;

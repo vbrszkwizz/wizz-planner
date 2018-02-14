@@ -4,6 +4,8 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import SearchField from '../SearchField/SearchField';
 import FlightsList from '../FlightsList/FlightsList';
+import Summary from '../Summary/Summary';
+import './app.css';
 
 class App extends Component {
   constructor() {
@@ -178,7 +180,7 @@ class App extends Component {
 
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
-        <div>
+        <div className="planner-app">
           <SearchField
             stations={this.state.stations}
             origin={this.state.origin}
@@ -203,6 +205,7 @@ class App extends Component {
               destination={this.state.destination}
             />
           )}
+          {this.state.flights.length > 0 && <Summary />}
         </div>
       </MuiThemeProvider>
     );
