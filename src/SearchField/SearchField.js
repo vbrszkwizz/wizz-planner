@@ -9,7 +9,7 @@ import Card from 'material-ui/Card';
 import './searchField.css';
 
 const SearchField = props => {
-  let stations = props.stations
+  const stations = props.stations
     .map(e => pick(e, ['iata', 'shortName']))
     .sort((a, b) => {
       if (a.shortName < b.shortName) {

@@ -39,7 +39,7 @@ class App extends Component {
   }
 
   handleOriginChange = event => {
-    let origin = this.getValueFromSelect(event);
+    const origin = this.getValueFromSelect(event);
 
     localStorage.setItem('destination', '');
     this.setState({ destination: '' });
@@ -51,12 +51,12 @@ class App extends Component {
   };
 
   handleDestinationChange = event => {
-    let destination = this.getValueFromSelect(event);
+    const destination = this.getValueFromSelect(event);
     localStorage.setItem('destination', destination);
     this.setState({ destination, validationErrorDestination: '', flights: [] });
   };
 
-  getValueFromSelect = (event) =>
+  getValueFromSelect = event =>
     event.target.childNodes[0].lastElementChild === undefined
       ? event.target.innerText
       : event.target.childNodes[0].lastElementChild.innerText
@@ -76,7 +76,7 @@ class App extends Component {
   };
 
   handleSubmit = () => {
-    let payload = {
+    const payload = {
       origin: this.getIataCode(this.state.stations, this.state.origin),
       destination: this.getIataCode(
         this.state.stations,
@@ -151,18 +151,18 @@ class App extends Component {
     city === '' ? '' : stations.find(e => e.shortName === city).iata;
 
   calculateConnections() {
-    let connectionData = this.state.stations.filter(
+    const connectionData = this.state.stations.filter(
       e => e.shortName === this.state.origin
     )[0].connections;
 
-    let connectionIataCodes = connectionData.map(e => e.iata);
+    const connectionIataCodes = connectionData.map(e => e.iata);
 
     if (connectionIataCodes.some(e => e === undefined)) {
       this.setState({ connections: [] });
       return;
     }
 
-    let connections = connectionIataCodes
+    const connections = connectionIataCodes
       .map(e => this.state.stations.find(el => el.iata === e))
       .map(e => e.shortName)
       .sort();
@@ -183,7 +183,7 @@ class App extends Component {
     });
   };
 
-  handleOnCellClickOutbound = (row, col, event) => {
+  handleCellClickOutbound = (row, col, event) => {
     this.setState({
       selectedOutboundValues: [
         event.currentTarget.parentNode.childNodes[1].innerHTML,
@@ -194,7 +194,7 @@ class App extends Component {
     });
   };
 
-  handleOnCellClickInbound = (row, col, event) => {
+  handleCellClickInbound = (row, col, event) => {
     this.setState({
       selectedInboundValues: [
         event.currentTarget.parentNode.childNodes[1].innerHTML,
@@ -245,8 +245,8 @@ class App extends Component {
               selectedInbound={this.state.selectedInbound}
               handleRowSelectionOutbound={this.handleRowSelectionOutbound}
               handleRowSelectionInbound={this.handleRowSelectionInbound}
-              handleOnCellClickOutbound={this.handleOnCellClickOutbound}
-              handleOnCellClickInbound={this.handleOnCellClickInbound}
+              handleCellClickOutbound={this.handleCellClickOutbound}
+              handleCellClickInbound={this.handleCellClickInbound}
             />
           )}
           {(this.state.selectedOutbound.length > 0 ||

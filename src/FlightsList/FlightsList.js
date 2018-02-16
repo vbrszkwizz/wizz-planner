@@ -28,9 +28,45 @@ class FlightsList extends Component {
       )
     );
 
+  renderTable = (
+    handleRowSelection,
+    handleCellClick,
+    origin,
+    destination,
+    flights,
+    isSelected
+  ) => (
+    <Table onRowSelection={handleRowSelection} onCellClick={handleCellClick}>
+      <TableHeader>
+        <TableRow>
+          §
+          <TableHeaderColumn colSpan="4" style={{ textAlign: 'center' }}>
+            {origin} - {destination}
+          </TableHeaderColumn>
+        </TableRow>
+        <TableRow>
+          <TableHeaderColumn>type</TableHeaderColumn>
+          <TableHeaderColumn>price</TableHeaderColumn>
+          <TableHeaderColumn>departure</TableHeaderColumn>
+          <TableHeaderColumn>arrival</TableHeaderColumn>
+        </TableRow>
+      </TableHeader>
+      <TableBody deselectOnClickaway={false}>
+        {flights.map((e, i) => (
+          <TableRow key={i} selected={isSelected(i)}>
+            <TableRowColumn>{e.bundle}</TableRowColumn>
+            <TableRowColumn>€ {e.price}</TableRowColumn>
+            <TableRowColumn>{e.departure}</TableRowColumn>
+            <TableRowColumn>{e.arrival}</TableRowColumn>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+
   render() {
-    let flights = this.getProperties(this.props.flights);
-    let flightsBack = this.getProperties(this.props.flightsBack);
+    const flights = this.getProperties(this.props.flights);
+    const flightsBack = this.getProperties(this.props.flightsBack);
 
     const style = {
       width: 830,
@@ -40,68 +76,23 @@ class FlightsList extends Component {
     return (
       <Card style={style} zDepth={2}>
         <div className="flights-list">
-          <Table
-            onRowSelection={this.props.handleRowSelectionOutbound}
-            onCellClick={this.props.handleOnCellClickOutbound}
-          >
-            <TableHeader>
-              <TableRow>
-                §
-                <TableHeaderColumn colSpan="4" style={{ textAlign: 'center' }}>
-                  {this.props.origin} - {this.props.destination}
-                </TableHeaderColumn>
-              </TableRow>
-              <TableRow>
-                <TableHeaderColumn>type</TableHeaderColumn>
-                <TableHeaderColumn>price</TableHeaderColumn>
-                <TableHeaderColumn>departure</TableHeaderColumn>
-                <TableHeaderColumn>arrival</TableHeaderColumn>
-              </TableRow>
-            </TableHeader>
-            <TableBody deselectOnClickaway={false}>
-              {flights.map((e, i) => (
-                <TableRow key={i} selected={this.isSelectedOutbound(i)}>
-                  <TableRowColumn>{e.bundle}</TableRowColumn>
-                  <TableRowColumn>€ {e.price}</TableRowColumn>
-                  <TableRowColumn>{e.departure}</TableRowColumn>
-                  <TableRowColumn>{e.arrival}</TableRowColumn>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          {this.props.flightsBack.length > 0 && (
-            <Table
-              onRowSelection={this.props.handleRowSelectionInbound}
-              onCellClick={this.props.handleOnCellClickInbound}
-            >
-              <TableHeader>
-                <TableRow>
-                  <TableHeaderColumn
-                    colSpan="4"
-                    style={{ textAlign: 'center' }}
-                  >
-                    {this.props.destination} - {this.props.origin}
-                  </TableHeaderColumn>
-                </TableRow>
-                <TableRow>
-                  <TableHeaderColumn>type</TableHeaderColumn>
-                  <TableHeaderColumn>price</TableHeaderColumn>
-                  <TableHeaderColumn>departure</TableHeaderColumn>
-                  <TableHeaderColumn>arrival</TableHeaderColumn>
-                </TableRow>
-              </TableHeader>
-              <TableBody deselectOnClickaway={false}>
-                {flightsBack.map((e, i) => (
-                  <TableRow key={i} selected={this.isSelectedInbound(i)}>
-                    <TableRowColumn>{e.bundle}</TableRowColumn>
-                    <TableRowColumn>€ {e.price}</TableRowColumn>
-                    <TableRowColumn>{e.departure}</TableRowColumn>
-                    <TableRowColumn>{e.arrival}</TableRowColumn>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+          {this.renderTable(
+            this.props.handleRowSelectionOutbound,
+            this.props.handleCellClickOutbound,
+            this.props.origin,
+            this.props.destination,
+            flights,
+            this.isSelectedOutbound
           )}
+          {this.props.flightsBack.length > 0 &&
+            this.renderTable(
+              this.props.handleRowSelectionInbound,
+              this.props.handleCellClickInbound,
+              this.props.destination,
+              this.props.origin,
+              flightsBack,
+              this.isSelectedInbound
+            )}
         </div>
       </Card>
     );
@@ -117,8 +108,8 @@ FlightsList.propTypes = {
   selectedInbound: PropTypes.arrayOf(PropTypes.number),
   handleRowSelectionOutbound: PropTypes.func.isRequired,
   handleRowSelectionInbound: PropTypes.func.isRequired,
-  handleOnCellClickOutbound: PropTypes.func.isRequired,
-  handleOnCellClickInbound: PropTypes.func.isRequired
+  handleCellClickOutbound: PropTypes.func.isRequired,
+  handleCellClickInbound: PropTypes.func.isRequired
 };
 
 export default FlightsList;

@@ -25,73 +25,56 @@ const Summary = ({
     return parseInt(outBoundPrice, 10) + parseInt(inBoundPrice, 10);
   };
 
+  const renderSummaryRow = (origin, destination, date, values) => (
+    <section className="summary-row">
+      <div>
+        {origin}
+        <span>&nbsp;</span>
+        <i className="material-icons">arrow_forward</i>
+        <span>&nbsp;</span>
+        {destination}
+      </div>
+      <div>
+        <i className="material-icons">today</i>
+        <span>&nbsp;</span>
+        {date}
+      </div>
+      <div>
+        <i className="material-icons">flight_takeoff</i>
+        <span>&nbsp;</span>
+        {values[2]}
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <i className="material-icons">flight_land</i>
+        <span>&nbsp;</span>
+        {values[3]}
+      </div>
+      <div className="ticket-type">type: {values[0]}</div>
+      <div className="ticket-price">
+        <i className="material-icons">euro_symbol</i>
+        <span>&nbsp;</span>
+        {values[1].slice(2)}
+      </div>
+    </section>
+  );
+
   return (
     <Card style={style} zDepth={2} className="summary">
       <CardTitle title="summary" />
       <CardText>
-        {selectedOutbound.length > 0 && (
-          <section className="summary-row">
-            <div>
-              {origin}
-              <span>&nbsp;</span>
-              <i className="material-icons">arrow_forward</i>
-              <span>&nbsp;</span>
-              {destination}
-            </div>
-            <div>
-              <i className="material-icons">today</i>
-              <span>&nbsp;</span>
-              {outboundDate}
-            </div>
-            <div>
-              <i className="material-icons">flight_takeoff</i>
-              <span>&nbsp;</span>
-              {selectedOutboundValues[2]}
-              <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-              <i className="material-icons">flight_land</i>
-              <span>&nbsp;</span>
-              {selectedOutboundValues[3]}
-            </div>
-            <div className="ticket-type">
-              type: {selectedOutboundValues[0]}{' '}
-            </div>
-            <div className="ticket-price">
-              <i className="material-icons">euro_symbol</i>
-              <span>&nbsp;</span>
-              {selectedOutboundValues[1].slice(2)}
-            </div>
-          </section>
-        )}
+        {selectedOutbound.length > 0 &&
+          renderSummaryRow(
+            origin,
+            destination,
+            outboundDate,
+            selectedOutboundValues
+          )}
         {selectedInbound.length > 0 && (
-          <section className="summary-row">
-            <div>
-              {destination}
-              <span>&nbsp;</span>
-              <i className="material-icons">arrow_forward</i>
-              <span>&nbsp;</span>
-              {origin}
-            </div>
-            <div>
-              <i className="material-icons">today</i>
-              <span>&nbsp;</span>
-              {inboundDate}
-            </div>
-            <div>
-              <i className="material-icons">flight_takeoff</i>
-              <span>&nbsp;</span>
-              {selectedInboundValues[2]}
-              <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-              <i className="material-icons">flight_land</i>
-              <span>&nbsp;</span>
-              {selectedInboundValues[3]}
-            </div>
-            <div className="ticket-type">type: {selectedInboundValues[0]}</div>
-            <div className="ticket-price">
-              <i className="material-icons">euro_symbol</i>
-              <span>&nbsp;</span>
-              {selectedInboundValues[1].slice(2)}
-            </div>
-          </section>
+          renderSummaryRow(
+            destination,
+            origin,
+            inboundDate,
+            selectedInboundValues
+          )
         )}
         <p className="total">
           TOTAL SUM<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
