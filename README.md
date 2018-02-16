@@ -28,7 +28,7 @@ yarn start
 
 ### Deployment
 
-After every commit pushed to the master branch, tests are running on [Travis-CI](https://travis-ci.org/vborszeki/react-users) and the app is being deployed to GitHub Pages. :tada:
+After every commit pushed to the master branch, tests are running on [Travis-CI](https://travis-ci.org/vbrszkwizz/wizz-planner) and the app is being deployed to GitHub Pages. :tada:
 
 ## Technology List
 * React - https://facebook.github.io/react
