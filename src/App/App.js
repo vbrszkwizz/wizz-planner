@@ -39,7 +39,7 @@ class App extends Component {
   }
 
   handleOriginChange = event => {
-    let origin = event.target.innerHTML;
+    let origin = this.getValueFromSelect(event);
 
     localStorage.setItem('destination', '');
     this.setState({ destination: '' });
@@ -51,10 +51,17 @@ class App extends Component {
   };
 
   handleDestinationChange = event => {
-    let destination = event.target.innerHTML;
+    let destination = this.getValueFromSelect(event);
     localStorage.setItem('destination', destination);
     this.setState({ destination, validationErrorDestination: '', flights: [] });
   };
+
+  getValueFromSelect = (event) =>
+    event.target.childNodes[0].lastElementChild === undefined
+      ? event.target.innerText
+      : event.target.childNodes[0].lastElementChild.innerText
+          .replace(/(\\n)/, '')
+          .trim();
 
   handleOutboundDateChange = (event, date) => {
     this.setState({
